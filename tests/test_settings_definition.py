@@ -2,13 +2,24 @@ import os
 from unittest.mock import patch
 
 from base import BaseTest
-from seedsigner.models.settings_definition import SettingsConstants
+from seedsigner.models.settings_definition import SettingsConstants, SettingsDefinition
 
 
 class TestSettingsDefinition(BaseTest):
     @classmethod
     def setup_class(cls):
         super().setup_class()
+
+
+    def test_display_configuration_defaults_to_auto(self):
+        entry = SettingsDefinition.get_settings_entry(SettingsConstants.SETTING__DISPLAY_CONFIGURATION)
+        assert entry.default_value == SettingsConstants.DISPLAY_CONFIGURATION__AUTO
+        assert SettingsConstants.DISPLAY_CONFIGURATION__AUTO in [
+            option[0] for option in entry.selection_options
+        ]
+        assert SettingsConstants.DISPLAY_CONFIGURATION__ST7789__320x240 in [
+            option[0] for option in entry.selection_options
+        ]
 
 
     def test__get_detected_languages(self):

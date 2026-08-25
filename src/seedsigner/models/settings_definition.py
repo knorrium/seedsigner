@@ -358,11 +358,14 @@ class SettingsConstants:
 
 
     # Hardware config settings
-    DISPLAY_CONFIGURATION__ST7789__240x240 = "st7789_240x240"  # default; original Waveshare 1.3" display hat
+    DISPLAY_CONFIGURATION__AUTO = "auto"  # default; detect 320x240 ST7789 when the hardware identifies itself
+    DISPLAY_CONFIGURATION__ST7789__240x240 = "st7789_240x240"  # original Waveshare 1.3" display hat
     DISPLAY_CONFIGURATION__ST7789__320x240 = "st7789_320x240"    # natively portrait dimensions; we apply a 90° rotation
     DISPLAY_CONFIGURATION__ILI9341__320x240 = "ili9341_320x240"  # natively portrait dimensions; we apply a 90° rotation
     DISPLAY_CONFIGURATION__ILI9486__480x320 = "ili9486_480x320"  # natively portrait dimensions; we apply a 90° rotation
     ALL_DISPLAY_CONFIGURATIONS = [
+        # TRANSLATOR_NOTE: Hardware settings option to auto-detect the connected display
+        (DISPLAY_CONFIGURATION__AUTO, _mft("Auto")),
         (DISPLAY_CONFIGURATION__ST7789__240x240, "st7789 240x240"),
         (DISPLAY_CONFIGURATION__ST7789__320x240, "st7789 320x240"),
         (DISPLAY_CONFIGURATION__ILI9341__320x240, "ili9341 320x240 (beta)"),
@@ -726,7 +729,9 @@ class SettingsDefinition:
                       type=SettingsConstants.TYPE__SELECT_1,
                       visibility=SettingsConstants.VISIBILITY__HARDWARE,
                       selection_options=SettingsConstants.ALL_DISPLAY_CONFIGURATIONS,
-                      default_value=SettingsConstants.DISPLAY_CONFIGURATION__ST7789__240x240),
+                      # TRANSLATOR_NOTE: Explains that Auto detects a 320x240 ST7789 when the hat identifies itself
+                      help_text=_mft("Auto uses 320x240 ST7789 when the display identifies as such, otherwise 240x240. Manual selection always overrides."),
+                      default_value=SettingsConstants.DISPLAY_CONFIGURATION__AUTO),
 
         SettingsEntry(category=SettingsConstants.CATEGORY__SYSTEM,
                       attr_name=SettingsConstants.SETTING__DISPLAY_COLOR_INVERTED,

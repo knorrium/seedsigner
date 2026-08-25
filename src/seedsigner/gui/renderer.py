@@ -1,10 +1,14 @@
+import logging
 from PIL import Image, ImageDraw
 from threading import Lock
 
 from seedsigner.hardware.displays.display_driver import ALL_DISPLAY_TYPES, DISPLAY_TYPE__ILI9341, DISPLAY_TYPE__ILI9486, DISPLAY_TYPE__ST7789, DisplayDriverFactory
+from seedsigner.hardware.displays.display_detector import resolve_display_configuration
 from seedsigner.models.settings import Settings
 from seedsigner.models.settings_definition import SettingsConstants
 from seedsigner.models.singleton import ConfigurableSingleton
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -38,11 +42,13 @@ class Renderer(ConfigurableSingleton):
         self.lock.acquire()
 
         display_config = Settings.get_instance().get_value(SettingsConstants.SETTING__DISPLAY_CONFIGURATION, default_if_none=True)
+        display_config = resolve_display_configuration(display_config)
         self.display_type = display_config.split("_")[0]
         if self.display_type not in ALL_DISPLAY_TYPES:
             raise Exception(f"Invalid display type: {self.display_type}")
 
         width, height = display_config.split("_")[1].split("x")
+        logger.debug("Initializing display %s (%sx%s)", self.display_type, width, height)
 
         if self.disp:
             # Existing instances might need to close resources like pwm
